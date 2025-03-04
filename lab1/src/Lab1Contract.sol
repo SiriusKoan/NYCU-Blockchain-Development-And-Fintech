@@ -17,13 +17,16 @@ contract Lab1Contract {
         emit EthReceived(msg.sender, msg.value);
     }
 
-    // Function to withdraw funds (only owner can call this)
+    fallback() external payable {
+        emit EthReceived(msg.sender, msg.value);
+    }
+
     function withdraw() external {
         require(msg.sender == owner, "Not the owner");
         uint256 balance = address(this).balance;
         require(balance > 0, "No funds to withdraw");
 
-        (bool success, ) = owner.call{value: balance}("");
+        (bool success, ) = payable(owner).call{value: balance}("");
         require(success, "Withdraw failed");
 
         emit Withdrawn(owner, balance);
