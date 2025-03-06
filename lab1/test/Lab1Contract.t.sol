@@ -6,20 +6,12 @@ import "../src/Lab1Contract.sol";
 
 contract Lab1ContractTest is Test {
     Lab1Contract lab1;
-    address owner;
+    address owner = address(0xabc);
     address user = address(0x123);
 
-    receive() external payable {
-        emit Lab1Contract.EthReceived(msg.sender, msg.value);
-    }
-
-    fallback() external payable {
-        emit Lab1Contract.EthReceived(msg.sender, msg.value);
-    }
-
     function setUp() public {
+        vm.prank(owner);
         lab1 = new Lab1Contract();
-        owner = address(this);
     }
 
     function testReceiveETH() public {
@@ -44,6 +36,7 @@ contract Lab1ContractTest is Test {
 
     function testWithdrawByOwner() public {
         vm.deal(address(lab1), 1 ether);
+        vm.prank(owner);
         uint256 ownerBalanceBefore = owner.balance;
 
         lab1.withdraw();
