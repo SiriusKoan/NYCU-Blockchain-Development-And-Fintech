@@ -7,7 +7,7 @@ contract Lab2LockContract {
     address public owner;
     uint256 public startTime;
     uint256 public endTime;
-    address public tokenAddress;
+    address public token;
     mapping(address => uint256) private lockedTokens;
     mapping(address => uint256) private tokenTakenByOwner;
     mapping(address => bool) private unlocked;
@@ -27,8 +27,8 @@ contract Lab2LockContract {
         _;
     }
 
-    constructor(address _tokenAddress) {
-        tokenAddress = _tokenAddress;
+    constructor(address _token) {
+        token = _token;
         owner = msg.sender;
     }
 
@@ -82,7 +82,8 @@ contract Lab2LockContract {
         }
 
         // transfer the tokens
-        Lab2Token(tokenAddress).transfer(msg.sender, reward);
+        require(Lab2Token(token).allowance(owner, address(this)) >= reward, "Contract not approved to spend tokens");
+        Lab2Token(token).transferFrom(owner, msg.sender, reward);
 
         // reset the locked balance and set the unlocked flag
         lockedTokens[msg.sender] = 0;

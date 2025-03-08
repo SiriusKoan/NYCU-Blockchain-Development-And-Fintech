@@ -15,9 +15,11 @@ contract Lab2LockContractTest is Test {
     function setUp() public {
         vm.prank(owner);
         token = new Lab2Token();
-
         vm.prank(owner);
         lab2 = new Lab2LockContract(address(token));
+        vm.prank(owner);
+        token.approve(address(lab2), 10000);
+
         vm.prank(owner);
         lab2.setStartTime(0);
         vm.prank(owner);
