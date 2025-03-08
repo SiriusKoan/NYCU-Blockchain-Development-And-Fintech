@@ -82,7 +82,6 @@ contract Lab2LockContract {
         }
 
         // transfer the tokens
-        require(Lab2Token(token).allowance(owner, address(this)) >= reward, "Contract not approved to spend tokens");
         Lab2Token(token).transferFrom(owner, msg.sender, reward);
 
         // reset the locked balance and set the unlocked flag

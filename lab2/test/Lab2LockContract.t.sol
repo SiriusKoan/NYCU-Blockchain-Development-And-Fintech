@@ -18,7 +18,7 @@ contract Lab2LockContractTest is Test {
         vm.prank(owner);
         lab2 = new Lab2LockContract(address(token));
         vm.prank(owner);
-        token.approve(address(lab2), 10000);
+        token.approve(address(lab2), 1000000);
 
         vm.prank(owner);
         lab2.setStartTime(0);
@@ -69,7 +69,6 @@ contract Lab2LockContractTest is Test {
         vm.prank(user1);
         lab2.lock{value: 100}();
         vm.prank(owner);
-
         lab2.setEndTime(0);
         vm.prank(user1);
         lab2.unlock();
@@ -77,5 +76,64 @@ contract Lab2LockContractTest is Test {
         assertEq(token.balanceOf(user1), 1000);
     }
 
-    function testUserTradeFunds() public {}
+    function testUserTradeFunds() public {
+        vm.prank(owner);
+        lab2.setStartTime(10000000000);
+        vm.deal(user1, 100);
+        vm.prank(user1);
+        lab2.lock{value: 100}();
+
+        vm.prank(owner);
+        assertEq(lab2.getLockedTokens(user1), 100);
+
+        vm.prank(owner);
+        lab2.tradeUserFunds(30, user1);
+
+        vm.prank(owner);
+        assertEq(lab2.getLockedTokens(user1), 70);
+        vm.prank(owner);
+        assertEq(lab2.getTokenTakenByOwner(user1), 30);
+    }
+
+    function testFull() public {
+        vm.prank(owner);
+        lab2.setStartTime(10000000000);
+        vm.prank(owner);
+        lab2.setEndTime(0);
+
+        // user1 locks 100 eth
+        vm.deal(user1, 100);
+        vm.prank(user1);
+        lab2.lock{value: 100}();
+        vm.prank(owner);
+        assertEq(lab2.getLockedTokens(user1), 100);
+
+        // user1 unlocks
+        vm.prank(user1);
+        lab2.unlock();
+        vm.prank(owner);
+        assertEq(token.balanceOf(user1), 1000);
+
+        // user2 locks 200 eth
+        vm.deal(user2, 200);
+        vm.prank(user2);
+        lab2.lock{value: 200}();
+        vm.prank(owner);
+        assertEq(lab2.getLockedTokens(user2), 200);
+
+        // owner executes tradeUserFunds with 50 eth on user2
+        vm.prank(owner);
+        lab2.tradeUserFunds(50, user2);
+        vm.prank(owner);
+        assertEq(lab2.getLockedTokens(user2), 150);
+        vm.prank(owner);
+        assertEq(lab2.getTokenTakenByOwner(user2), 50);
+
+        // user2 unlocks
+        vm.prank(user2);
+        lab2.unlock();
+        vm.prank(owner);
+        assertEq(token.balanceOf(user2), 1000 + 200 * 2500);
+        assertEq(address(user2).balance, 0);
+    }
 }
