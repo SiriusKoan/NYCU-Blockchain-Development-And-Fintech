@@ -8,9 +8,9 @@ contract Lab2LockContract {
     uint256 public startTime;
     uint256 public endTime;
     address public token;
-    mapping(address => uint256) private lockedTokens;
-    mapping(address => uint256) private tokenTakenByOwner;
-    mapping(address => bool) private unlocked;
+    mapping(address => uint256) public lockedTokens;
+    mapping(address => uint256) public tokenTakenByOwner;
+    mapping(address => bool) public unlocked;
 
     event EthReceived(address indexed sender, uint256 amount);
 
@@ -40,25 +40,16 @@ contract Lab2LockContract {
         endTime = _endTime;
     }
 
-    function getETH() public view onlyOwner returns(uint256) {
+    function getETH() public view onlyOwner returns (uint256) {
         return address(this).balance;
-    }
-
-    function getLockedTokens(address locker) public view onlyOwner returns(uint256) {
-        return lockedTokens[locker];
-    }
-
-    function getTokenTakenByOwner(address locker) public view onlyOwner returns(uint256) {
-        return tokenTakenByOwner[locker];
-    }
-
-    function getUnlocked(address locker) public view onlyOwner returns(bool) {
-        return unlocked[locker];
     }
 
     function lock() external payable {
         // Check if the locking period has started
-        require(block.timestamp < startTime, "Locking period has already started");
+        require(
+            block.timestamp < startTime,
+            "Locking period has already started"
+        );
 
         // lock the tokens
         lockedTokens[msg.sender] += msg.value;
@@ -70,7 +61,10 @@ contract Lab2LockContract {
         // Check if the sender has already unlocked the tokens
         require(!unlocked[msg.sender], "Tokens already unlocked");
         // Check if the sender has locked tokens
-        require(lockedTokens[msg.sender] > 0 || tokenTakenByOwner[msg.sender] > 0, "No tokens locked");
+        require(
+            lockedTokens[msg.sender] > 0 || tokenTakenByOwner[msg.sender] > 0,
+            "No tokens locked"
+        );
 
         // Get the rewarded amount
         uint256 reward = 0;
@@ -78,7 +72,10 @@ contract Lab2LockContract {
             reward = 1000;
             payable(msg.sender).transfer(lockedTokens[msg.sender]);
         } else {
-            reward = 1000 + (lockedTokens[msg.sender] + tokenTakenByOwner[msg.sender]) * 2500;
+            reward =
+                1000 +
+                (lockedTokens[msg.sender] + tokenTakenByOwner[msg.sender]) *
+                2500;
         }
 
         // transfer the tokens

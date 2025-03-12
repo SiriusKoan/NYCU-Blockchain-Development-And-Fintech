@@ -58,7 +58,7 @@ contract Lab2LockContractTest is Test {
         vm.prank(user1);
         lab2.lock{value: 100}();
         vm.prank(owner);
-        assertEq(lab2.getLockedTokens(user1), 100);
+        assertEq(lab2.lockedTokens(user1), 100);
     }
 
     function testUnlock() public {
@@ -84,15 +84,15 @@ contract Lab2LockContractTest is Test {
         lab2.lock{value: 100}();
 
         vm.prank(owner);
-        assertEq(lab2.getLockedTokens(user1), 100);
+        assertEq(lab2.lockedTokens(user1), 100);
 
         vm.prank(owner);
         lab2.tradeUserFunds(30, user1);
 
         vm.prank(owner);
-        assertEq(lab2.getLockedTokens(user1), 70);
+        assertEq(lab2.lockedTokens(user1), 70);
         vm.prank(owner);
-        assertEq(lab2.getTokenTakenByOwner(user1), 30);
+        assertEq(lab2.tokenTakenByOwner(user1), 30);
     }
 
     function testFull() public {
@@ -106,7 +106,7 @@ contract Lab2LockContractTest is Test {
         vm.prank(user1);
         lab2.lock{value: 100}();
         vm.prank(owner);
-        assertEq(lab2.getLockedTokens(user1), 100);
+        assertEq(lab2.lockedTokens(user1), 100);
 
         // user1 unlocks
         vm.prank(user1);
@@ -119,15 +119,15 @@ contract Lab2LockContractTest is Test {
         vm.prank(user2);
         lab2.lock{value: 200}();
         vm.prank(owner);
-        assertEq(lab2.getLockedTokens(user2), 200);
+        assertEq(lab2.lockedTokens(user2), 200);
 
         // owner executes tradeUserFunds with 50 eth on user2
         vm.prank(owner);
         lab2.tradeUserFunds(50, user2);
         vm.prank(owner);
-        assertEq(lab2.getLockedTokens(user2), 150);
+        assertEq(lab2.lockedTokens(user2), 150);
         vm.prank(owner);
-        assertEq(lab2.getTokenTakenByOwner(user2), 50);
+        assertEq(lab2.tokenTakenByOwner(user2), 50);
 
         // user2 unlocks
         vm.prank(user2);

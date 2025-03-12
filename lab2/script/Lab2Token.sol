@@ -15,6 +15,8 @@ contract DeployLab2 is Script {
         Lab2LockContract lab2 = new Lab2LockContract(address(token));
         console.log("Lab2LockContract deployed at:", address(lab2));
 
+        token.approve(address(lab2), type(uint256).max);
+
         vm.stopBroadcast(); // Stop broadcasting
     }
 }
