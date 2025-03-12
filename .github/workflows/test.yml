@@ -11,10 +11,16 @@ env:
 jobs:
   check:
     strategy:
+      matrix:
+        labs: ["lab1", "lab2"]
       fail-fast: true
 
     name: Foundry project
     runs-on: ubuntu-latest
+
+    defaults:
+      run:
+        working-directory: ${{ matrix.labs }}
     steps:
       - uses: actions/checkout@v4
         with:
