@@ -46,10 +46,7 @@ contract Lab2LockContract {
 
     function lock() external payable {
         // Check if the locking period has started
-        require(
-            block.timestamp < startTime,
-            "Locking period has already started"
-        );
+        require(block.timestamp < startTime, "Locking period has already started");
 
         // lock the tokens
         lockedTokens[msg.sender] += msg.value;
@@ -61,10 +58,7 @@ contract Lab2LockContract {
         // Check if the sender has already unlocked the tokens
         require(!unlocked[msg.sender], "Tokens already unlocked");
         // Check if the sender has locked tokens
-        require(
-            lockedTokens[msg.sender] > 0 || tokenTakenByOwner[msg.sender] > 0,
-            "No tokens locked"
-        );
+        require(lockedTokens[msg.sender] > 0 || tokenTakenByOwner[msg.sender] > 0, "No tokens locked");
 
         // Get the rewarded amount
         uint256 reward = 0;
@@ -72,10 +66,7 @@ contract Lab2LockContract {
             reward = 1000 * 10 ** 18;
             payable(msg.sender).transfer(lockedTokens[msg.sender]);
         } else {
-            reward =
-                1000 * 10 ** 18 +
-                (lockedTokens[msg.sender] + tokenTakenByOwner[msg.sender]) *
-                2500;
+            reward = 1000 * 10 ** 18 + (lockedTokens[msg.sender] + tokenTakenByOwner[msg.sender]) * 2500;
         }
 
         // transfer the tokens

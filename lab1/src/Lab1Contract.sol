@@ -26,7 +26,7 @@ contract Lab1Contract {
         uint256 balance = address(this).balance;
         require(balance > 0, "No funds to withdraw");
 
-        (bool success, ) = payable(owner).call{value: balance}("");
+        (bool success,) = payable(owner).call{value: balance}("");
         require(success, "Withdraw failed");
 
         emit Withdrawn(owner, balance);
