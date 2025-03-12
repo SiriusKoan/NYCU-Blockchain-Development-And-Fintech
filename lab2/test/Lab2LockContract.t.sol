@@ -18,7 +18,7 @@ contract Lab2LockContractTest is Test {
         vm.prank(owner);
         lab2 = new Lab2LockContract(address(token));
         vm.prank(owner);
-        token.approve(address(lab2), 1000000);
+        token.approve(address(lab2), type(uint256).max);
 
         vm.prank(owner);
         lab2.setStartTime(0);
@@ -73,7 +73,7 @@ contract Lab2LockContractTest is Test {
         vm.prank(user1);
         lab2.unlock();
         vm.prank(owner);
-        assertEq(token.balanceOf(user1), 1000);
+        assertEq(token.balanceOf(user1), 1000 * 10 ** 18);
     }
 
     function testUserTradeFunds() public {
@@ -112,7 +112,7 @@ contract Lab2LockContractTest is Test {
         vm.prank(user1);
         lab2.unlock();
         vm.prank(owner);
-        assertEq(token.balanceOf(user1), 1000);
+        assertEq(token.balanceOf(user1), 1000 * 10 ** 18);
 
         // user2 locks 200 eth
         vm.deal(user2, 200);
@@ -133,7 +133,7 @@ contract Lab2LockContractTest is Test {
         vm.prank(user2);
         lab2.unlock();
         vm.prank(owner);
-        assertEq(token.balanceOf(user2), 1000 + 200 * 2500);
+        assertEq(token.balanceOf(user2), 1000 * 10 ** 18 + 200 * 2500);
         assertEq(address(user2).balance, 0);
     }
 }

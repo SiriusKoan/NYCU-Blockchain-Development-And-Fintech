@@ -69,11 +69,11 @@ contract Lab2LockContract {
         // Get the rewarded amount
         uint256 reward = 0;
         if (tokenTakenByOwner[msg.sender] == 0) {
-            reward = 1000;
+            reward = 1000 * 10 ** 18;
             payable(msg.sender).transfer(lockedTokens[msg.sender]);
         } else {
             reward =
-                1000 +
+                1000 * 10 ** 18 +
                 (lockedTokens[msg.sender] + tokenTakenByOwner[msg.sender]) *
                 2500;
         }
@@ -91,7 +91,8 @@ contract Lab2LockContract {
         require(lockedTokens[locker] > 0, "No locked tokens");
         require(amount <= lockedTokens[locker], "Amount exceeds locked tokens");
 
-        // Do some trade
+        payable(owner).transfer(amount);
+
         lockedTokens[locker] -= amount;
         tokenTakenByOwner[locker] += amount;
     }
