@@ -12,7 +12,7 @@ jobs:
   check:
     strategy:
       matrix:
-        labs: ["lab1", "lab2"]
+        labs: ["lab1", "lab2", "lab3"]
       fail-fast: true
 
     name: Foundry project
